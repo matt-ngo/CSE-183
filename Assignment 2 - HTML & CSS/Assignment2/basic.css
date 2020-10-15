@@ -1,0 +1,23 @@
+/* 
+  CSE183 Assignment 2
+
+  CSS for Basic Requirement 
+*/
+
+body {
+  font-size: 40pt;
+  font-family: "Courier Lucida Console", Courier, monospace;
+}
+
+.text {
+  background-color: yellow;
+  width: 60px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.char {
+  height: 60px;
+  margin: 0;
+  padding-top: 10px;
+}
