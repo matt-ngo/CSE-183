@@ -22,6 +22,7 @@ class Templater {
   apply(map, strict) {
     // alias
     let template = this.template;
+
     // base cases
     if (template == undefined) {
       return undefined;
@@ -56,16 +57,20 @@ class Templater {
        * for both beginning and end tag edge cases
        */
       // some non-space then the tag
-      template = template.replace(/<>[^ <\n]/g, (match, key) => {
+      // let replacedAll = false;
+      // while(!replacedAll){
+
+      // }
+      template = template.replace(/(<>)+[^ <\n]/g, (match, key) => {
         return match[match.length - 1];
       });
       // the tag then some non-space
-      template = template.replace(/[^ >]<>/g, (match, key) => {
+      template = template.replace(/[^ >](<>)+/g, (match, key) => {
         return match[0];
       });
       // tags with spaces
-      template = template.replace(/ <>/g, '');
-      template = template.replace(/<> /g, '');
+      template = template.replace(/ (<>)+/g, '');
+      template = template.replace(/(<>)+ /g, '');
       template = template.replace('<>', '');
 
       templateModified = template !== oldTemplate;

@@ -62,3 +62,8 @@ test('Non-Space Tag Separators', () => {
   const t = new Templater('Hello my name is {{James}}-Smith_{{Bernard}}');
   expect(t.apply({tag: 'World'})).toBe('Hello my name is -Smith_');
 });
+
+test('Missing Tag with Alternative Separator Ending', () => {
+  const t = new Templater('Mary {{had}} a {{little}}{{lamb}}-sheep');
+  expect(t.apply({had: 'had'})).toBe('Mary had a -sheep');
+});
