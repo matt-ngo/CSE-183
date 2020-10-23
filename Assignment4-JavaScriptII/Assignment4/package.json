@@ -1,0 +1,23 @@
+{
+  "name": "cse183-assignment4",
+  "version": "1.0.0",
+  "description": "CSE183 Assignment 4 - JavsScript II",
+  "repository": "none",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^7.11.0",
+    "eslint-config-google": "^0.14.0",
+    "jest": "^26.5.3",
+    "puppeteer-core": "^5.3.1",
+    "puppeteer": "^5.3.1"
+  },
+  "jest": {
+    "collectCoverage": false
+  },
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint *.js",
+    "test": "jest"
+  },
+  "author": "David Harrison <dcharris@ucsc.edu>",
+  "license": "UNLICENSED"
+}
