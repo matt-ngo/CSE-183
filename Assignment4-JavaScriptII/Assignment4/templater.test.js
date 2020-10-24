@@ -66,16 +66,28 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+let browser;
+
+beforeEach(async (done) => {
+  browser = await puppeteer.launch({
+    //headless: false,
+    //devtools: true
+  });
+  done();
+});
+
+afterEach(async (done) => {
+  await browser.close(); 
+  fs.unlinkSync(`${__dirname}/tagged.templater.html`);
+  done();
+});
+
 async function basic(byTag, sparse) {
   const all = randomise(sparse);
   const data = all.data;
   const obf = all.obf;
   const map = all.map;
   const empty = all.empty;
-  const browser = await puppeteer.launch({
-    //headless: false,
-    //devtools: true
-  });
   const page = await browser.newPage();   
   await page.goto(`file://${__dirname}/tagged.templater.html`);    
   await page.$eval('#json', el => el.value = '');
@@ -83,7 +95,7 @@ async function basic(byTag, sparse) {
   await json.focus();
   await page.keyboard.type(JSON.stringify(byTag?data:obf));
   await page.click('#'+(byTag?'byTag':'byId'));
-  sleep(2000); // very sloppy syncronisation method
+  await sleep(1000); 
   for (let prop in obf) {
     const elem = await page.$("#"+prop);
     const cont = await (await elem.getProperty('textContent')).jsonValue();
@@ -94,8 +106,6 @@ async function basic(byTag, sparse) {
     const cont = await (await elem.getProperty('textContent')).jsonValue();
     expect(cont).toBe('');
   }
-  await browser.close(); 
-  fs.unlinkSync(`${__dirname}/tagged.templater.html`);
 }
 
 test('By Tag Dense', async () => {
