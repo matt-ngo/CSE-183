@@ -1,1 +1,50 @@
 /* CSS for the Stretch requirement */
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 30px;
+}
+
+#spinner {
+  color: rgb(40, 40, 40);
+  background-color: rgb(225, 195, 185);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  border: 10px solid rgb(40, 40, 40);
+  border-radius: 1%;
+  margin: auto;
+  margin-top: 10%;
+  width: fit-content;
+  padding: 20px;
+  align-content: center;
+}
+
+button {
+  float: left;
+}
+
+.label {
+  float: left;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-weight: 900;
+  font-size: 50px;
+  width: 120px;
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  margin: 40px;
+}
+
+button {
+  font-family: Arial, Helvetica, sans-serif;
+  border: none;
+  width: 60px;
+  height: 60px;
+  background-color: rgba(249, 249, 243, 0);
+  font-size: 30px;
+  font-weight: 900;
+  position: relative;
+  right: 0px;
+}
