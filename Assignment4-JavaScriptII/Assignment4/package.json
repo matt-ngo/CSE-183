@@ -2,6 +2,8 @@
   "name": "cse183-assignment4",
   "version": "1.0.0",
   "description": "CSE183 Assignment 4 - JavsScript II",
+  "author": "David Harrison <dcharris@ucsc.edu>",
+  "license": "UNLICENSED",
   "repository": "none",
   "dependencies": {},
   "devDependencies": {
@@ -17,7 +19,5 @@
   "scripts": {
     "lint": "./node_modules/.bin/eslint *.js",
     "test": "jest --runInBand"
-  },
-  "author": "David Harrison <dcharris@ucsc.edu>",
-  "license": "UNLICENSED"
+  }
 }

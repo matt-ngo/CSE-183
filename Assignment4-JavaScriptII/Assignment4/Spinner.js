@@ -26,12 +26,50 @@ class Spinner {
       'JUN',
       'JUL',
       'AUG',
-      'SEPT',
+      'SEP',
       'OCT',
       'NOV',
       'DEC',
     ];
     return months[num];
+  }
+
+
+  /**
+   * checks if the current day is over the amount of days available
+   * in the new month, if so, go to the last day of the new month
+   * @param {Date.month} newMonth
+   * @param {Date.year} currentYear
+   * @param {Date.day} currentDay
+   * @return {Date.day} max date of the next month
+   */
+  roundDate(newMonth, currentYear, currentDay) {
+    const lastDay = new Date(currentYear, newMonth+1, 0).getDate();
+
+    if (currentDay>lastDay) {
+      return lastDay;
+    } else {
+      return currentDay;
+    }
+  }
+
+
+  /**
+   * render the month part and its buttons
+   * @param {number} shift
+   * @param {Date.month} month
+   * @param {Date.day} day
+   * @param {Date.year} year
+   */
+  shiftMonth(shift, month, day, year) {
+    const nxtFloor = new Date(year, month, 1);
+    nxtFloor.setMonth(nxtFloor.getMonth()+shift);
+
+    const nxtDay = this.roundDate(nxtFloor.getMonth(),
+        nxtFloor.getFullYear(), day);
+
+    this.makeSpinner(new Date(nxtFloor.getFullYear(),
+        nxtFloor.getMonth(), nxtDay));
   }
 
   /**
@@ -50,7 +88,7 @@ class Spinner {
     prevMonth.innerHTML = '&#9664';
     prevMonth.id = 'prevMonth';
     prevMonth.addEventListener('click', () => {
-      this.makeSpinner(new Date(year, month - 2, day));
+      this.shiftMonth(-1, month, day, year);
     });
     monthDiv.appendChild(prevMonth);
 
@@ -58,7 +96,7 @@ class Spinner {
     const monthName = document.createElement('div');
     monthName.id = 'month';
     monthName.className = 'label';
-    monthName.innerHTML = this.getMonth(month - 1);
+    monthName.innerHTML = this.getMonth(month);
     monthDiv.appendChild(monthName);
 
     // right button
@@ -66,7 +104,7 @@ class Spinner {
     nextMonth.innerHTML = '&#9654';
     nextMonth.id = 'nextMonth';
     nextMonth.addEventListener('click', () => {
-      this.makeSpinner(new Date(year, month, day));
+      this.shiftMonth(1, month, day, year);
     });
     monthDiv.appendChild(nextMonth);
 
@@ -82,7 +120,7 @@ class Spinner {
    */
   makeDay(month, day, year, container) {
     const dayDiv = document.createElement('div');
-    month = month-1;
+    // month = month-1;
     dayDiv.className = 'dayContainer container';
 
     // left button
@@ -113,6 +151,23 @@ class Spinner {
     container.appendChild(dayDiv);
   }
 
+  /**
+   * render the month part and its buttons
+   * @param {number} shift
+   * @param {Date.month} month
+   * @param {Date.day} day
+   * @param {Date.year} year
+   */
+  shiftYear(shift, month, day, year) {
+    const nxtFloor = new Date(year, month, 1);
+    nxtFloor.setFullYear(nxtFloor.getFullYear()+shift);
+
+    const nxtDay = this.roundDate(nxtFloor.getMonth(),
+        nxtFloor.getFullYear(), day);
+
+    this.makeSpinner(new Date(nxtFloor.getFullYear(),
+        nxtFloor.getMonth(), nxtDay));
+  }
 
   /**
    * render the year part and its buttons
@@ -123,7 +178,7 @@ class Spinner {
    */
   makeYear(month, day, year, container) {
     const yearDiv = document.createElement('div');
-    month = month-1;
+    // month = month-1;
     yearDiv.className = 'yearContainer container';
 
     // left button
@@ -131,7 +186,7 @@ class Spinner {
     prevYear.innerHTML = '&#9664';
     prevYear.id = 'prevYear';
     prevYear.addEventListener('click', () => {
-      this.makeSpinner(new Date(year-1, month, day)); // day
+      this.shiftYear(-1, month, day, year);
     });
     yearDiv.appendChild(prevYear);
 
@@ -147,7 +202,7 @@ class Spinner {
     nextYear.innerHTML = '&#9654';
     nextYear.id = 'nextYear';
     nextYear.addEventListener('click', () => {
-      this.makeSpinner(new Date(year+1, month, day));
+      this.shiftYear(1, month, day, year);
     });
     yearDiv.appendChild(nextYear);
 
@@ -163,9 +218,10 @@ class Spinner {
     // for easy referencing later on
     const container = document.getElementById(this.containerId);
     // parse out current month/year info from date object
-    const month = date.getMonth() + 1; // (0-11)
+    const month = date.getMonth(); // (0-11) +1
     const day = date.getDate();
     const year = date.getFullYear();
+    // console.log(date);
     // get rid of old (previous month's) children
     while (container.firstChild) {
       container.removeChild(container.firstChild);

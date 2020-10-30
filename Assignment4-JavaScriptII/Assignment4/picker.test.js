@@ -1,13 +1,9 @@
 const puppeteer = require('puppeteer');
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 function firstDate(relative) {
   let date = new Date();
-  date.setMonth(date.getMonth()+relative); 
   date.setDate(1);
+  date.setMonth(date.getMonth()+relative); 
   return date.getDay();
 }
 
@@ -32,8 +28,9 @@ test('Next Month', async () => {
   const num = Math.max(1,Math.floor(Math.random()*28));
   for (let i = 0; i < num; i++) {
     await page.click('#next');
+    await page.waitForTimeout(100);
   }
-  await sleep(1000);
+  await page.waitForTimeout(500);
   const elem = await page.$("#d"+(firstDate(num)+num-1));
   const cont = await (await elem.getProperty('textContent')).jsonValue();
   expect(cont).toBe(''+num);

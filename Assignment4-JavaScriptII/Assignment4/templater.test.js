@@ -29,8 +29,18 @@ function generate() {
   };
 }
 
+const tags = [];
+
 function randomTag() {
-  return 'T' + (1000 + Math.floor(Math.random() * 9000));  
+  let tag;
+  while (true) {
+    tag = 'T' + (1000 + Math.floor(Math.random() * 9000));  
+    if (!tags.includes(tag)) {
+      tags.push(tag);
+      break;
+    }
+  }
+  return tag;
 }
 
 function randomise(sparse) {
@@ -56,22 +66,16 @@ function randomise(sparse) {
     map[tag] = prop;
   }
   json += '}';
-  fs.writeFile(`${__dirname}/tagged.templater.html`, result, 'utf8', function (err) {
-     if (err) return console.log(err);
-  });
+  fs.writeFileSync(`${__dirname}/tagged.templater.html`, result, 'utf8');
   return {data: data, obf: JSON.parse(json), map: map, empty: empty};
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 let browser;
 
 beforeEach(async (done) => {
   browser = await puppeteer.launch({
-    //headless: false,
-    //devtools: true
+//    headless: false,
+//    devtools: true
   });
   done();
 });
@@ -94,8 +98,9 @@ async function basic(byTag, sparse) {
   const json = await page.$("#json");
   await json.focus();
   await page.keyboard.type(JSON.stringify(byTag?data:obf));
+  await page.waitForTimeout(100);
   await page.click('#'+(byTag?'byTag':'byId'));
-  await sleep(1000); 
+  await page.waitForTimeout(1000);
   for (let prop in obf) {
     const elem = await page.$("#"+prop);
     const cont = await (await elem.getProperty('textContent')).jsonValue();
@@ -121,6 +126,6 @@ test('By ID Dense', async () => {
 });
 
 test('By ID Sparse', async () => {
-  await basic(true,true);
+  await basic(false,true);
 });
 
