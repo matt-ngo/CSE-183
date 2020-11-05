@@ -1,0 +1,29 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title>HTML / JavaScript SPA</title>
+  <link href="index.css" rel="stylesheet"/>
+  <script type="text/javascript" src="index.js"></script>
+  <script type="text/javascript" src="Home.js"></script>
+  <script type="text/javascript" src="Tech.js"></script>
+  <script type="text/javascript" src="Help.js"></script>
+</head> 
+<body> 
+  <h1>CSE183 Fall 2020</h1>
+  <ul class="navigation">
+    <li><a id="homeRef" href="#/home">Home</a></li>
+    <li><a id="techRef" href="#/tech">Tech</a></li>
+    <li><a id="helpRef" href="#/help">Help</a></li>
+  </ul>
+  <div>
+    <div id="home"></div>
+    <div id="tech"></div>
+    <div id="help"></div>
+  </div>
+</body> 
+<script>
+  new Home("home");
+  new Tech("tech");
+  new Help("help");
+</script>
+</html>  

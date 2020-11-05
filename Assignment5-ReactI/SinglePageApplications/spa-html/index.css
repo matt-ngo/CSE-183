@@ -1,0 +1,30 @@
+body {
+  background-color: gold;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-family: sans-serif;
+}
+
+ul.navigation {
+  background-color: black;
+  padding: 0;
+    user-select: none; 
+}
+
+ul.navigation li {
+  display: inline;
+  list-style-type: none;
+  margin: 0;
+}
+
+ul.navigation li a {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 10px;
+  display: inline-block;
+}
+
+.active {
+  background-color: royalblue;
+}
