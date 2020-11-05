@@ -133,11 +133,39 @@ test('Randomly Entered Month Has Correct Number of Days', async () => {
 });
 
 // input invalid date. set should not be clickable
-test('Invalid Month = Disabled button', async () => {
+test('Invalid Date = Disabled button: STRING', async () => {
   const page = await browser.newPage();   
 	await page.goto('http://localhost:3000/');
 
 	await page.type('#date', 'not-a-date', {delay: 20})
+
+	//https://stackoverflow.com/questions/51524439/checking-an-element-is-disabled-using-puppeteer
+	let button = await page.$('#set[disabled]')
+	expect(button).not.toBe(null);
+
+	button = await page.$('#set:not([disabled])')
+	expect(button).toBe(null);
+});
+
+test('Invalid Date = Disabled button: MMM/DD/Y', async () => {
+  const page = await browser.newPage();   
+	await page.goto('http://localhost:3000/');
+
+	await page.type('#date', '666/96/6', {delay: 20})
+
+	//https://stackoverflow.com/questions/51524439/checking-an-element-is-disabled-using-puppeteer
+	let button = await page.$('#set[disabled]')
+	expect(button).not.toBe(null);
+
+	button = await page.$('#set:not([disabled])')
+	expect(button).toBe(null);
+});
+
+test('Invalid Date = Disabled button: M/D', async () => {
+  const page = await browser.newPage();   
+	await page.goto('http://localhost:3000/');
+
+	await page.type('#date', '3/7', {delay: 20})
 
 	//https://stackoverflow.com/questions/51524439/checking-an-element-is-disabled-using-puppeteer
 	let button = await page.$('#set[disabled]')
