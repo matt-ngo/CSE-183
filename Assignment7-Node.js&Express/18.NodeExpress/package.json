@@ -1,0 +1,23 @@
+{
+  "name": "cse183-books-example",
+  "version": "1.0.0",
+  "description": "CSE183 Books Example",
+  "author": "David Harrison <dcharris@ucsc.edu>",
+  "license": "UNLICENSED",
+  "repository": "none",
+  "devDependencies": {
+    "jest": "^26.5.3",
+    "nodemon": "^2.0.6",
+    "supertest": "^6.0.1"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-openapi-validator": "^4.5.0",
+    "js-yaml": "^3.14.0",
+    "swagger-ui-express": "^4.1.4"
+  },
+  "scripts": {
+    "start": "nodemon src/server.js",
+    "test": "jest --runInBand --testTimeout=2000 --coverage"
+  }
+}

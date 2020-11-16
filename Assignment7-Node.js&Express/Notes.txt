@@ -1,0 +1,20 @@
+Implement the express route so get v0/email works
+
+BASIC
+
+- GET /v0/mail
+- GET /v0/mail?mailbox={mailbox}
+- GET /v0/mail/{id}
+- POST /v0/mail
+- PUT /v0/mail/{id}?mailbox={mailbox}
+
+ADVANCED
+write tests to demonstrate satisfaction of BASIC
+100% on line statement branch & function code coverage
+0 lint errors
+
+STRETCH
+save mailbox modifications to disk
+when server restarts, modified/new mailboxes are available
+write tests to demonstrate how this works
+show zero lint errors and 100% code coverage
