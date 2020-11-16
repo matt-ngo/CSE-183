@@ -1,0 +1,24 @@
+Desktop 2
+
+    anyone know how to set the width of a card to fill the size of its parent component?
+    width: 100%(edited)
+    Might just need to read the API to access the width of some nested component
+
+    Click Email in the list and full message appears
+    click x and viewing box goes away
+
+        put an AppBar in a Card
+        onClick for the table row, how exactly are you popping up a card? 
+        I have something updating a state and then my code checks the 
+        state to see if it should display, but don't know where to go from there
+
+        I just have some global state stored in a context. Whenever I click an email, 
+        it does a thing to that state that tells the card to appear.
+
+        used a card and had it hidden by default until you click an email
+
+Desktop 3
+
+Mobile 1
+
+Mobile 2

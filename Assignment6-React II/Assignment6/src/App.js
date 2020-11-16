@@ -1,5 +1,8 @@
 import React from 'react';
-import emails from './data/emails.json';
+// import emails from './data/emails.json';
+import Drawer from './Drawer';
+// import InboxContext from './Context';
+
 
 /**
  * Simple component with no state.
@@ -10,21 +13,35 @@ import emails from './data/emails.json';
  * @return {object} JSX
  */
 function App() {
+  // create hooks
+  // https://www.robinwieruch.de/react-pass-props-to-component
+  // https://reactjs.org/docs/hooks-state.html
+  const [showInbox, setInbox] = React.useState(true);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const switchTrash = () => {
+    setInbox(false);
+    setMobileOpen(false);
+  };
+  const switchInbox = () => {
+    setInbox(true);
+    setMobileOpen(false);
+  };
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
   return (
     <div>
-      <h2>Let&apos;s make this look way better with Material-UI, eh?</h2>
-      <table>
-        <tbody>
-          {emails.map((email) => (
-            <tr key={email.id}>
-              <td>{email.from}</td>
-              <td>{email.subject}</td>
-              <td>{email.received}</td>
-              <td>{email.trash ? 'Trash' : 'Inbox'}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* pass in hooks as props */}
+      <Drawer
+        showInbox={showInbox}
+        switchTrash = {switchTrash}
+        switchInbox = {switchInbox}
+        mobileOpen = {mobileOpen}
+        handleDrawerToggle = {handleDrawerToggle}
+      />
     </div>
   );
 }
