@@ -241,7 +241,7 @@ components:
       additionalProperties: false
       required:
         - subject
-        # - received
-        # - content
+        - received
+        - content
         - to-name
         - to-email
