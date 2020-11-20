@@ -48,7 +48,7 @@ paths:
             schema:
               $ref: '#/components/schemas/EmailPost'
       responses:
-        200:
+        201:
           description: Application response
           content:
             application/json:
@@ -112,12 +112,12 @@ paths:
           description: Email specified by {id} not found
         409:
           description: Conflict. Named mailbox = 'sent'
-        # default:
-        #   description: Unexpected Error
-        #   content:
-        #     application/json:
-        #       schema:
-        #         $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 components:
   schemas:

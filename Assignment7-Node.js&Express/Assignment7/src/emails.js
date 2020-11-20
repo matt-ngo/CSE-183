@@ -100,7 +100,7 @@ exports.postEmail = async (req, res) => {
   const fileName = './data/sent.json';
   fs.writeFileSync(fileName, JSON.stringify(sent, null, 2));
 
-  res.status(200).send(newEmail);
+  res.status(201).send(newEmail);
 };
 
 exports.moveEmail = async (req, res) => {

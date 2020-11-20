@@ -133,7 +133,7 @@ const postTest = {
 test('POST New: Valid', async () => {
   await request.post('/v0/mail/')
     .send(postTest)
-    .expect(200)
+    .expect(201)
     .then(data => {
       expect(data).toBeDefined();
       expect(data.body).toBeDefined();
@@ -166,7 +166,7 @@ test('POST then GET an Email', async () => {
   let tempId = ''
   await request.post('/v0/mail/')
     .send(postTest)
-    .expect(200)
+    .expect(201)
     .then(data => {
       expect(data).toBeDefined();
       expect(data.body).toBeDefined();
@@ -220,7 +220,7 @@ test('PUT: Moving from Inbox to Sent', async () => {
 });
 
 // ======================= STRETCH TESTING ======================= //
-// Server is shut down in between every test (see @ beforAll() afterAll())
+// Server is shut down in between every test (see @ beforEach() afterEach())
 // the following tests modify then read data but 
 // only after each server has been shut down and restarted
 
@@ -235,7 +235,7 @@ const postTest3 = {
 test('-STRETCH 1a: POST data in SENT*', async () => {
   await request.post('/v0/mail/')
     .send(postTest3)
-    .expect(200)
+    .expect(201)
     .then(data => {
       expect(data).toBeDefined();
       expect(data.body).toBeDefined();
@@ -270,11 +270,11 @@ test('-STRETCH 3a: PUT: Moving from Trash to NEW mailbox', async () => {
     .expect(204)
 });
 
-test('---STRETCH 3b: See if newMailbox exists*', async () => {
+test('---STRETCH 3b: See if newMailbox exists', async () => {
   expect(fs.existsSync('./data/newMailbox.json')).toEqual(true)
 });
 
-test('---STRETCH 3c: Read data just moved into Trash*', async () => {
+test('---STRETCH 3c: Read data just moved into newMailbox', async () => {
   const changedBox = 
   JSON.parse(fs.readFileSync('./data/newMailbox.json'));
   const email = changedBox.find((email) => email.id == '910f64aa-26d6-4887-85ce-04160aa9550f')
