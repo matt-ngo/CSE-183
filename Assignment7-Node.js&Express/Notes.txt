@@ -1,12 +1,61 @@
 Implement the express route so get v0/email works
 
+I started with the openapi.yaml thing
+Just basically translate the spec into that
+Then work on implementation second.
+
 BASIC
 
-- GET /v0/mail
-- GET /v0/mail?mailbox={mailbox}
+
 - GET /v0/mail/{id}
+    return email identified by id
+
 - POST /v0/mail
+    save new email sent in the http body into the sent mailbox
+    and return the newly generated email.
+    id should be undefined on submission, set upon return
+    throw a 500 if the email has an id attribute
+
+exports.postEmail = async (req, res) => {
+  let count = 0;
+  Object.keys(req.body).forEach((key) => count ++);
+  // Spec originally wanted a 500 :(
+  // if (
+  //   count != 5 ||
+  //   !req.body.hasOwnProperty('subject') ||
+  //   !req.body.hasOwnProperty('received') ||
+  //   !req.body.hasOwnProperty('content') ||
+  //   !req.body.hasOwnProperty('to-name') ||
+  //   !req.body.hasOwnProperty('to-email')
+  // ) {
+  //   res.status(500).send();
+  // }
+
+  const newEmail = req.body;
+  newEmail['id'] = uuidGen();
+  newEmail['from-name'] = 'CSE183 Student';
+  newEmail['from-email'] = 'cse183-student@ucsc.edu';
+
+  sent.push(newEmail);
+
+  // Modify on disk
+  // const fileName = './data/sent2.json';
+  // fs.writeFile(fileName, JSON.stringify(sent), (err) => {
+  //   if (err) return console.log(err);
+  //   console.log(JSON.stringify(sent));
+  //   console.log('writing to ' + fileName);
+  // });
+
+  res.status(201).send(newEmail);
+};
+
 - PUT /v0/mail/{id}?mailbox={mailbox}
+    move the email identified by id into the specified mailbox
+    if the mailbox dne, create it and move the identified
+    email into it.
+    If the email dne, throw a 404
+    throw a 409 if the named mailbox is 'sent' and the mail 
+
 
 ADVANCED
 write tests to demonstrate satisfaction of BASIC
@@ -18,3 +67,43 @@ save mailbox modifications to disk
 when server restarts, modified/new mailboxes are available
 write tests to demonstrate how this works
 show zero lint errors and 100% code coverage
+
+
+Is there an easy way to find if a mailbox exists
+I'm on the part where you wanna make a new mailbox or push the put to the new mailbox
+stickStackzYesterday at 7:53 PM
+fs.readdir then use find
+
+to get fs to give you promises, do fs.promises.readfile
+
+JSON.parse(fs.readFileSync('../data/inbox.json'))
+
+when u do readFile, you have to convert it to json
+JSON.parse(fs.readFileSync('file'); (and async)
+
+
+/*
+need to get read the local file content to have something to push to
+{
+  0c0806ff-b2f8-42cc-8f19-e9cc3a8f1858
+
+  "subject": "Test POST",
+  "received": "2019-02-24T12:33:19Z",
+  "content": "This is a test to POST",
+  "to-name": "matt",
+  "to-email": "matt4@cbc.ca"
+  object[‘key’] = whatever;
+}
+
+
+{
+    "id": "2bf44539-3c64-4a31-98e3-9760fb4dac7f",
+    "to-name": "string",
+    "to-email": "user@example.com",
+    "subject": "string",
+    "received": "2020-11-19T03:14:19.665Z",
+    "content": "string",
+    "from-name": "Matt",
+    "from-email": "matt@yahoo.com"
+  },
+*/

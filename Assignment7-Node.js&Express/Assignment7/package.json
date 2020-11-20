@@ -23,6 +23,6 @@
     "lint": "./node_modules/.bin/eslint . --ext .js",
     "start": "nodemon src/server.js",
     "test": "jest --runInBand --testTimeout=2000 --coverage",
-    "zip": "bestzip Assignment7.Submission.zip src/* api/* test/*; tar -tf Assignment7.Submission.zip"
+    "zip": "bestzip Assignment7.Submission.zip src/* api/* test/*"
   }
 }

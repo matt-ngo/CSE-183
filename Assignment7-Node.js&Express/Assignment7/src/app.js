@@ -5,6 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const OpenApiValidator = require('express-openapi-validator');
 
+const emails = require('./emails');
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
@@ -22,7 +24,18 @@ app.use(
     }),
 );
 
+emails.updateMap();
+
 // Your routes go here
+// - GET /v0/mail
+// - GET /v0/mail?mailbox={mailbox}
+app.get('/v0/mail', emails.getMailbox);
+// - GET /v0/mail/{id}
+app.get('/v0/mail/:id', emails.getById);
+// - POST /v0/mail
+app.post('/v0/mail', emails.postEmail);
+// - PUT /v0/mail/{id}?mailbox={mailbox}
+app.put('/v0/mail/:id', emails.moveEmail);
 
 app.use((err, req, res, next) => {
   res.status(err.status).json({

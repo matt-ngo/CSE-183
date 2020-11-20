@@ -16,6 +16,232 @@ paths:
   /v0/mail:
     get:
       description: Returns all EMail
+      parameters:
+        - in: 'query'
+          name: mailbox
+          description: 'Specified mailbox to retrieve emails from'
+          required: false
+          schema:
+            type: string
       responses:
         200:
           description: Email Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResponseNoContent'
+        404:
+          description: Mailbox not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates a new email in the sent folder
+      requestBody:
+        description: Application to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailPost'
+      responses:
+        200:
+          description: Application response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Email'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v0/mail/{id}:
+    get:
+      description: Returns a single email specified by {id}
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+
+      responses:
+        200:
+          description: Email found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Email'
+        404:
+          description: Email not Found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      description: Move email {id} to specified mailbox
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: 'query'
+          name: mailbox
+          description: 'Specified mailbox to place email into'
+          schema:
+            type: string
+          required: true
+      responses:
+        204:
+          description: Email move success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Email'
+        404:
+          description: Email specified by {id} not found
+        409:
+          description: Conflict. Named mailbox = 'sent'
+        # default:
+        #   description: Unexpected Error
+        #   content:
+        #     application/json:
+        #       schema:
+        #         $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+    EmailResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/Mailbox'
+
+    EmailResponseNoContent:
+      type: array
+      items:
+        $ref: '#/components/schemas/MailboxNoContent'
+
+    Mailbox:
+      type: object
+      properties:
+        name:
+          type: string
+        mail:
+          type: array
+          items:
+            $ref: '#/components/schemas/Email'
+
+    MailboxNoContent:
+      type: object
+      properties:
+        name:
+          type: string
+        mail:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailNoContent'
+
+    Email:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        to-name:
+          type: string
+        to-email:
+          type: string
+          format: email
+        subject:
+          type: string
+        received:
+          type: string
+          format: date-time
+        content:
+          type: string
+        from-name:
+          type: string
+        from-email:
+          type: string
+      required:
+        - id
+        - to-name
+        - to-email
+        - subject
+        - received
+        - content
+        - from-name
+        - from-email
+
+    EmailNoContent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        to-name:
+          type: string
+        to-email:
+          type: string
+          format: email
+        subject:
+          type: string
+        received:
+          type: string
+          format: date-time
+        from-name:
+          type: string
+        from-email:
+          type: string
+      required:
+        - id
+        - to-name
+        - to-email
+        - subject
+        - received
+        - from-name
+        - from-email
+
+    EmailPost:
+      type: object
+      properties:
+        to-name:
+          type: string
+        to-email:
+          type: string
+          format: email
+        subject:
+          type: string
+        received:
+          type: string
+          format: date-time
+        content:
+          type: string
+      additionalProperties: false
+      required:
+        - subject
+        # - received
+        # - content
+        - to-name
+        - to-email
