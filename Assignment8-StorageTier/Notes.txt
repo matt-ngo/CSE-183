@@ -1,0 +1,115 @@
+Emails:
+- id (uuid)
+- from
+    - name
+    - email
+- to
+    - name
+    - email
+- subject
+- sent
+- received
+- content
+
+OPENAPI
+    restrictiuve as possible
+        uuid
+    
+DATABASE
+    schema defined in sql/schema.sql
+    single 'mail' table with columns:
+        id          UUID    
+        mailbox     String
+        mail        JSON    entire email itself
+
+// CREATE TABLE mail(
+//   id UUID UNIQUE PRIMARY KEY DEFAULT gen_random_uuid(),
+//   mailbox VARCHAR(32),
+//   mail jsonb);
+
+// CREATE TABLE book(
+// .   isbn VARCHAR(16) PRIMARY KEY,
+// .   book jsonb);
+
+// SELECT column1, column2, columnN
+// FROM table_name
+// WHERE [search_condition]
+-----------------------------------------------------------------
+                            BASIC
+
+/*
+  PSEUDO:
+  SQL: SELECT id, mailbox, mail, from mail
+  create map keyed by mailbox name
+  for each row returned from db
+    look up mailbox array in map
+    if dne
+      create it and insert in map
+    mail.id = row.id (set the id of the mail to be the row id)
+      (how we set the id of the postgrs table into the json)
+    insert mail into mailbox array
+  for each key in map
+    create named mailbox obj in mailboxes array
+  return mailboxes
+  */
+- GET /v0/mail
+[
+    {"name": "inbox", "mail": []},
+]
+- GET /v0/mail?mailbox={mailbox}
+- GET /v0/mail/{id}
+
+- POST /v0/mail
+    save new email sent in the http body into the sent mailbox
+    and return the newly generated email.
+
+    'id' AND 'from' should be undefined on submission, set upon return
+        id = UUID
+        from.email, from.name = etc...
+  * 'sent' AND 'received' should be missing
+        set upon retrun, both hold same value
+
+    throw a 400 if the email has any unexpected properties
+
+- PUT /v0/mail/{id}?mailbox={mailbox}
+    move the email identified by id into the specified mailbox
+    if the mailbox dne, create it and move the identified
+    email into it.
+    204 success
+    If the email dne, throw a 404
+    throw a 409 if the named mailbox is 'sent'
+
+-----------------------------------------------------------------
+                            ADVANCED
+
+write tests to demonstrate satisfaction of BASIC
+100% on line statement branch & function code coverage
+0 lint errors
+-----------------------------------------------------------------
+                            STRETCH
+
+Add endpoint: 
+
+GET /v0/mail?from={mail}
+
+return array of named mailboxes containing arrays of emails sent by person
+(search 'from', where names can be a full or partial name or a correctly 
+formatted email)
+    from is case insensitive 
+content property removed
+tests written
+
+
+# to-name:
+        #   type: string
+        # to-email:
+        #   type: string
+        #   format: email
+
+# from-name:
+        #   type: string
+        # from-email:
+        #   type: string
+
+ // select += ` WHERE mailbox = $1 AND mail->'from'->>'name' ~* $2`;
+    // select += ` OR mailbox = $1 AND mail->'from'->>'email' ~* $2`;

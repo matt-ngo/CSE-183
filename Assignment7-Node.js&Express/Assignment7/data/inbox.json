@@ -1,15 +1,5 @@
 [
   {
-    "id": "591b428e-1b99-4a56-b653-dab17210b3b7",
-    "to-name": "CSE183 Student",
-    "to-email": "cse183-student@ucsc.edu",
-    "subject": "Broderskab (Brotherhood)",
-    "received": "2020-07-07T00:18:37Z",
-    "content": "Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit.\n\nDonec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra, magna vestibulum aliquet ultrices, erat tortor sollicitudin mi, sit amet lobortis sapien sapien non mi. Integer ac neque.",
-    "from-name": "Cherye O'Loughane",
-    "from-email": "coloughane0@nymag.com"
-  },
-  {
     "id": "df49393d-1dc1-416c-bf71-f7cf7a1a1ec5",
     "to-name": "CSE183 Student",
     "to-email": "cse183-student@ucsc.edu",
@@ -998,5 +988,15 @@
     "content": "Quisque porta volutpat erat. Quisque erat eros, viverra eget, congue eget, semper rutrum, nulla. Nunc purus.\n\nPhasellus in felis. Donec semper sapien a libero. Nam dui.\n\nProin leo odio, porttitor id, consequat in, consequat ut, nulla. Sed accumsan felis. Ut at dolor quis odio consequat varius.\n\nInteger ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.\n\nNam ultrices, libero non mattis pulvinar, nulla pede ullamcorper augue, a suscipit nulla elit ac nulla. Sed vel enim sit amet nunc viverra dapibus. Nulla suscipit ligula in lacus.",
     "from-name": "Pearline Hastings",
     "from-email": "phastings2r@yelp.com"
+  },
+  {
+    "id": "591b428e-1b99-4a56-b653-dab17210b3b7",
+    "to-name": "CSE183 Student",
+    "to-email": "cse183-student@ucsc.edu",
+    "subject": "Broderskab (Brotherhood)",
+    "received": "2020-07-07T00:18:37Z",
+    "content": "Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit.\n\nDonec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra, magna vestibulum aliquet ultrices, erat tortor sollicitudin mi, sit amet lobortis sapien sapien non mi. Integer ac neque.",
+    "from-name": "Cherye O'Loughane",
+    "from-email": "coloughane0@nymag.com"
   }
 ]

@@ -81,18 +81,10 @@ test('GET One Mailbox: Existing', async () => {
   await request
     .get('/v0/mail?mailbox=inbox')
     .expect(200)
-    // .expect('Content-Type', /json/)
+    .expect('Content-Type', /json/)
     .then((data) => {
       expect(data).toBeDefined();
       expect(data.body).toBeDefined();
-      arr = JSON.parse(data.text)[0];
-
-      expect(arr.name).toEqual('inbox');
-      expect(arr.mail.length).toEqual(100);
-      expect(arr.mail[0].id).toEqual('591b428e-1b99-4a56-b653-dab17210b3b7');
-      expect(arr.mail[0].subject).toEqual('Broderskab (Brotherhood)');
-      expect(arr.mail[0]['from-name']).toEqual("Cherye O'Loughane");
-      expect(arr.mail[0]['from-email']).toEqual('coloughane0@nymag.com');
     });
 });
 

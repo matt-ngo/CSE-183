@@ -23,13 +23,19 @@ paths:
           required: false
           schema:
             type: string
+        - in: 'query'
+          name: from
+          description: 'Name to search for'
+          required: false
+          schema:
+            type: string
       responses:
         200:
           description: Email Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EmailResponseNoContent'
+                $ref: '#/components/schemas/AllMailboxesNoContent'
         404:
           description: Mailbox not found
         default:
@@ -137,7 +143,7 @@ components:
       items:
         $ref: '#/components/schemas/Mailbox'
 
-    EmailResponseNoContent:
+    AllMailboxesNoContent:
       type: array
       items:
         $ref: '#/components/schemas/MailboxNoContent'
@@ -168,31 +174,40 @@ components:
         id:
           type: string
           format: uuid
-        to-name:
-          type: string
-        to-email:
-          type: string
-          format: email
+        from:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+        to:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
         subject:
           type: string
+        sent:
+          type: string
+          format: date-time
         received:
           type: string
           format: date-time
         content:
           type: string
-        from-name:
-          type: string
-        from-email:
-          type: string
       # required:
       #   - id
-      #   - to-name
-      #   - to-email
+      #   - to
+      #   - from
       #   - subject
       #   - received
       #   - content
-      #   - from-name
-      #   - from-email
+      #   - sent
 
     EmailNoContent:
       type: object
@@ -200,48 +215,48 @@ components:
         id:
           type: string
           format: uuid
-        to-name:
-          type: string
-        to-email:
-          type: string
-          format: email
+        from:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+        to:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
         subject:
           type: string
+        sent:
+          type: string
+          format: date-time
         received:
           type: string
           format: date-time
-        from-name:
-          type: string
-        from-email:
-          type: string
-      # required:
-      #   - id
-      #   - to-name
-      #   - to-email
-      #   - subject
-      #   - received
-      #   - from-name
-      #   - from-email
 
     EmailPost:
       type: object
       properties:
-        to-name:
-          type: string
-        to-email:
-          type: string
-          format: email
+        to:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
         subject:
           type: string
-        received:
-          type: string
-          format: date-time
         content:
           type: string
       additionalProperties: false
       required:
+        - to
         - subject
-        - received
         - content
-        - to-name
-        - to-email

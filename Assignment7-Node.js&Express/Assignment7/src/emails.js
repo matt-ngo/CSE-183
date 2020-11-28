@@ -1,89 +1,104 @@
 const fs = require('fs');
-const fsPromises = fs.promises;
-const inbox = require('../data/inbox.json');
-const sent = require('../data/sent.json');
-const trash = require('../data/trash.json');
+// const fsPromises = fs.promises;
 
-const allMailboxes = {
-  inbox: inbox,
-  sent: sent,
-  trash: trash,
-};
+// Populate Mailboxes at server start
+const allMailboxes = {};
+const dataFiles = fs.readdirSync('./data/', {withFileTypes: true});
 
-exports.updateMap = async () => {
-  // console.log('UPDATING MAP');
-  fs.readdirSync('./data').forEach((file) => {
-    const fileName = file.slice(0, -5);
-    allMailboxes[fileName] = JSON.parse(fs.readFileSync('./data/' + file));
-  });
-  // console.log(Object.keys(allMailboxes));
-};
+for (const file of dataFiles) {
+  // Regex to remove file extension from JS string. https://bit.ly/3kMT4Uu
+  allMailboxes[file.name.replace(/\.[^/.]+$/, '')] =
+   JSON.parse(fs.readFileSync('./data/' + file.name));
+}
+
+// exports.updateMap = async () => {
+//   // console.log('UPDATING MAP');
+//   fs.readdirSync('./data').forEach((file) => {
+//     const fileName = file.slice(0, -5);
+//     allMailboxes[fileName] = JSON.parse(fs.readFileSync('./data/' + file));
+//   });
+//   // console.log(Object.keys(allMailboxes));
+// };
 
 exports.getMailbox = async (req, res) => {
-  const retArr = [];
+  const data = [];
 
   const mailboxQuery = req.query.mailbox;
-  // Return all mailbox
-  if (mailboxQuery == undefined) {
-    Object.keys(allMailboxes).forEach((key) => {
-      const mailbox = allMailboxes[key];
-      const currentMailBox = {};
-      const emails = [];
-      mailbox.forEach((obj) => {
-        const copy = Object.assign({}, obj);
-        delete copy.content;
-        emails.push(copy);
-      });
 
-      currentMailBox['name'] = key;
-      currentMailBox['mail'] = emails;
-      retArr.push(currentMailBox);
-    });
-    // Return just the one mailbox
+  if (mailboxQuery == undefined) {
+    // Return all mailboxes
+    // for every email in every mailbox
+    for (const [key, value] of Object.entries(allMailboxes)) {
+      const mail = [];
+      // copy email objects
+      value.forEach((email) => {
+        mail.push({
+          'id': email['id'],
+          'to-name': email['to-name'],
+          'to-email': email['to-email'],
+          'from-name': email['from-name'],
+          'from-email': email['from-email'],
+          'subject': email['subject'],
+        });
+      });
+      // add to the return array
+      data.push({
+        name: key,
+        mail: mail,
+      });
+    }
   } else {
-    const currentMailBox = {};
-    const emails = [];
+    // Return just the one mailbox
     const mailbox = allMailboxes[mailboxQuery];
 
     if (mailbox == undefined) {
       res.status(404).send();
       return;
     } else {
-      mailbox.forEach((obj) => {
-        const copy = Object.assign({}, obj);
-        delete copy.content;
-        emails.push(copy);
+      const mail = [];
+      mailbox.forEach((email) => {
+        mail.push({
+          'id': email['id'],
+          'to-name': email['to-name'],
+          'to-email': email['to-email'],
+          'from-name': email['from-name'],
+          'from-email': email['from-email'],
+          'subject': email['subject'],
+        });
       });
-
-      emails.forEach((obj) => {
-        delete obj.content;
+      data.push({
+        name: req.query['mailbox'],
+        mail: mail,
       });
-
-      currentMailBox['name'] = mailboxQuery;
-      currentMailBox['mail'] = emails;
-      retArr.push(currentMailBox);
     }
   }
-  res.status(200).send(JSON.stringify(retArr, null, 2));
+  // res.status(200).send(JSON.stringify(retArr, null, 2));
+  return res.status(200).json(data);
 };
 
 exports.getById = async (req, res) => {
-  Object.keys(allMailboxes).forEach((key) => {
-    const mailbox = allMailboxes[key];
-    const email = mailbox.find((email) => email.id == req.params.id);
+  // Iterates through every email
+  for (const value of Object.values(allMailboxes)) {
+    const email = value.find((email) => email.id == req.params.id);
     if (email) {
       res.status(200).json(email);
       return;
     }
-  });
+  }
+
+  // Object.keys(allMailboxes).forEach((key) => {
+  //   const mailbox = allMailboxes[key];
+  //   const email = mailbox.find((email) => email.id == req.params.id);
+  //   if (email) {
+  //     res.status(200).json(email);
+  //     return;
+  //   }
+  // });
   res.status(404).send();
 };
 
 exports.postEmail = async (req, res) => {
-  let count = 0;
-  Object.keys(req.body).forEach((key) => count++);
-
-  const newEmail = req.body;
+  const newEmail = {}; // req.body;
   // https://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid
   newEmail['id'] = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
       /[xy]/g,
@@ -93,82 +108,58 @@ exports.postEmail = async (req, res) => {
         return v.toString(16);
       },
   );
+  newEmail['to-name'] = req.body['to-name'];
+  newEmail['to-email'] = req.body['to-email'];
   newEmail['from-name'] = 'CSE183 Student';
   newEmail['from-email'] = 'cse183-student@ucsc.edu';
-  sent.push(newEmail);
+  newEmail['subject'] = req.body['subject'];
+  newEmail['received'] = req.body['received'];
+  newEmail['content'] = req.body['content'];
 
-  const fileName = './data/sent.json';
-  fs.writeFileSync(fileName, JSON.stringify(sent, null, 2));
+  // push locally
+  allMailboxes['sent'].push(newEmail);
+
+  fs.writeFileSync(
+      './data/sent.json',
+      JSON.stringify(allMailboxes['sent'], null, 2),
+  );
 
   res.status(201).send(newEmail);
 };
 
 exports.moveEmail = async (req, res) => {
-  const destMailbox = req.query.mailbox;
+  for (const [key, value] of Object.entries(allMailboxes)) {
+    // index mail objects for deletion
+    let removeIndex = 0;
+    for (const email of value) {
+      if (email['id'] === req.params.id) {
+        // IF destination = sent && not already in sent
+        if ((req.query['mailbox'] == 'sent') && (key != 'sent')) {
+          res.status(409).send();
+          return;
+        }
 
-  // search for the email id in existing inboxes
-  let found = false;
-  let foundEmail = undefined;
-  let sourceMailbox = undefined;
+        // IF mailbox DNE, create it
+        if (allMailboxes[req.query.mailbox] === undefined) {
+          allMailboxes[req.query.mailbox] = [];
+        }
+        allMailboxes[req.query.mailbox].push(email);
 
-  Object.keys(allMailboxes).forEach((key) => {
-    const currMailbox = allMailboxes[key];
-    const email = currMailbox.find((email) => email.id == req.params.id);
-    if (email) {
-      // email was already where it was supposed to be
-      if (key == destMailbox) {
-        res.status(204).json(email);
+        // Delete mail obj in the source
+        allMailboxes[key].splice(removeIndex, 1);
+
+        // Write changes to destination and source files
+        fs.writeFileSync('./data/'+req.query['mailbox']+'.json',
+            JSON.stringify(allMailboxes[req.query['mailbox']], null, 2));
+
+        fs.writeFileSync('./data/'+key+'.json',
+            JSON.stringify(allMailboxes[key], null, 2));
+
+        res.status(204).send();
         return;
       }
-      found = true;
-      foundEmail = email;
-      sourceMailbox = key;
+      removeIndex++;
     }
-  });
-
-  if (!found) {
-    res.status(404).send();
-    return;
   }
-
-  // If mailbox dne in the local map: create it, add new object to the map
-  if (allMailboxes[destMailbox] == undefined) {
-    const pathname = './data/' + destMailbox + '.json';
-
-    fs.writeFileSync(pathname, '[]');
-
-    allMailboxes[destMailbox] = JSON.parse(fs.readFileSync(pathname));
-  }
-
-  //  if found and dest = sent and source != sent, 409
-  if (found && destMailbox == 'sent' && sourceMailbox != 'sent') {
-    res.status(409).send();
-    return;
-  }
-
-  //  push email locally
-  allMailboxes[destMailbox].push(foundEmail);
-
-  //  delete it locally
-  const removeIndex = allMailboxes[sourceMailbox]
-      .map(function(item) {
-        return item.id;
-      })
-      .indexOf(foundEmail.id);
-  allMailboxes[sourceMailbox].splice(removeIndex, 1);
-
-  // rewrite destination
-  const dfileName = './data/' + destMailbox + '.json';
-  await fsPromises.writeFile(
-      dfileName,
-      JSON.stringify(allMailboxes[destMailbox], null, 2),
-  );
-  // rewrite source
-  const sfileName = './data/' + sourceMailbox + '.json';
-  await fsPromises.writeFile(
-      sfileName,
-      JSON.stringify(allMailboxes[sourceMailbox], null, 2),
-  );
-
-  res.status(204).json(foundEmail);
+  res.status(404).send();
 };
