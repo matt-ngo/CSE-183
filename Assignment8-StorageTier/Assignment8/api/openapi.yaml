@@ -251,6 +251,10 @@ components:
             email:
               type: string
               format: email
+          additionalProperties: false
+          required:
+            - name
+            - email
         subject:
           type: string
         content:

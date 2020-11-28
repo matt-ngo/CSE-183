@@ -117,6 +117,9 @@ describe('Advanced', function () {
   });
 
   const postTest3 = {
+    "to": {
+      "name": "post test 2",
+    },
     "subject": "string",
     "content": "string"
   };

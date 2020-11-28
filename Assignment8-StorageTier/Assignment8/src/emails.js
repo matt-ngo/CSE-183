@@ -46,7 +46,7 @@ exports.postEmail = async (req, res) => {
   };
   newEmail['subject'] = req.body['subject'];
   newEmail['content'] = req.body['content'];
-  const currentTime = new Date().toISOString();
+  const currentTime = new Date().toISOString().split('.')[0]+'Z';
   newEmail['sent'] = currentTime;
   newEmail['received'] = currentTime;
 
