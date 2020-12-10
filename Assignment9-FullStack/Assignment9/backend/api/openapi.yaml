@@ -1,0 +1,390 @@
+#
+# CSE183 Assignment 9 Backend
+#
+
+openapi: '3.0.3'
+
+info:
+  description: CSE183 Assignment 9 Backend
+  version: 0.1.0
+  title: CSE183 Assignment 9 Backend
+
+servers:
+  - url: http://localhost:3010
+
+paths:
+  /emails/{user}/{mailbox}:
+    get:
+      description: Get list of emails from current user and current mailbox
+      parameters:
+        - name: user
+          in: path
+          description: user's username
+          required: true
+          schema:
+            type: string
+        - name: mailbox
+          in: path
+          description: user's mailbox
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Array of mail specified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResponse'
+
+  /countUnread/{user}:
+    get:
+      description: Get array of unread email counts
+      parameters:
+        - name: user
+          in: path
+          description: user's username
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Array of mail specified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountResponse'
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: array
+          #       items:
+          #         type: integer
+
+  /emails/search/{user}/{queryString}:
+    get:
+      description: Get list of emails, searching with the included query string
+      parameters:
+        - name: user
+          in: path
+          description: user's username
+          required: true
+          schema:
+            type: string
+        - name: queryString
+          in: path
+          description: substring to search for
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Array of mail specified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResponse'
+
+  /starred/{id}:
+    post:
+      description: Toggle the 'starred' value of the email with given id
+      parameters:
+        - name: id
+          in: path
+          description: ID of email
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: object with 'starred' value of given email
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                starred:
+                  type: boolean
+              additionalProperties: false
+              required:
+                - starred
+      responses:
+        200:
+          description: Star value of email changed succesfully
+
+  /read/{id}:
+    post:
+      description: Mark as read the email with given id
+      parameters:
+        - name: id
+          in: path
+          description: ID of email
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: object with unread value of given email
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                unread:
+                  type: boolean
+              additionalProperties: false
+              required:
+                - unread
+      responses:
+        200:
+          description: Star value of email changed succesfully
+
+  /unread/{id}:
+    post:
+      description: Mark unread value of the email with given id
+      parameters:
+        - name: id
+          in: path
+          description: ID of email
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: object with unread value of given email
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                unread:
+                  type: boolean
+              additionalProperties: false
+              required:
+                - unread
+      responses:
+        200:
+          description: Star value of email changed succesfully
+
+  /newMailbox/{user}:
+    post:
+      description: create new mailbox by inserting user info
+      parameters:
+        - name: user
+          in: path
+          description: user's username
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: obj with new email name
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              additionalProperties: false
+              required:
+                - name
+      responses:
+        200:
+          description: Star value of email changed succesfully
+
+  /authenticate:
+    post:
+      description: Authenticate user info for login
+      requestBody:
+        description: Username & password
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        200:
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWT'
+
+  /verify:
+    post:
+      description: Check JWT expiration
+      requestBody:
+        description: JWT
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JWT'
+      responses:
+        200:
+          description: JWT valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  verified:
+                    type: boolean
+        403:
+          description: JWT invalid or expired
+  /send:
+    post:
+      description: Creates a new email in the sent folder
+      requestBody:
+        description: Application to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailPost'
+      responses:
+        201:
+          description: Application response
+          # content:
+          #   application/json:
+          #     schema:
+          #       $ref: '#/components/schemas/Email'
+components:
+  schemas:
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+    JWT:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        accessToken:
+          type: string
+      additionalProperties: false
+      required:
+        - name
+        - email
+        - accessToken
+
+    user:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+      additionalProperties: false
+      required:
+        - email
+        - password
+
+    EmailPost:
+      type: object
+      properties:
+        to:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+          additionalProperties: false
+          required:
+            - name
+            - email
+        from:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+          additionalProperties: false
+          required:
+            - name
+            - email
+        subject:
+          type: string
+        content:
+          type: string
+      additionalProperties: false
+      required:
+        - to
+        - from
+        - subject
+        - content
+    
+    CountResponse:
+      type: array
+      items:
+        type: integer
+        
+    
+    EmailResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          # avatar:
+          #   type: string
+          #   format: uri
+          mailbox:
+            type: string
+          unread:
+            type: boolean
+          starred:
+            type: boolean
+          mail:
+            type: object
+            properties:
+              from:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+              to:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+              subject:
+                type: string
+              sent:
+                type: string
+                format: date-time
+              received:
+                type: string
+                format: date-time
+              content:
+                type: string
+            additionalProperties: false
+            required:
+              - from
+              - to
+              - subject
+              - sent
+              - received
+              - content
